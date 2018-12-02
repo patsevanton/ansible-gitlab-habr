@@ -1,0 +1,18 @@
+---
+galaxy_info:
+  author: Ben Batschelet
+  description: Simple role for installing the default version of MySQL for Ubuntu
+  license: MIT
+  min_ansible_version: 2.5
+  platforms:
+  - name: Ubuntu
+    versions:
+    - xenial
+    - bionic
+  galaxy_tags:
+  - database
+  - sql
+  - mysql
+  - mariadb
+  - percona
+dependencies: []

@@ -1,0 +1,4 @@
+---
+sysctl_settings:
+  - name: vm.swappiness
+    value: 20

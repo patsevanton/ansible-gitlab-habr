@@ -1,0 +1,16 @@
+---
+- name: Add MariaDB APT Key
+  apt_key: keyserver=keyserver.ubuntu.com id={{ mariadb_apt_key[ansible_distribution_release] }} state=present
+  become: yes
+
+- name: Add MariaDB APT Repository
+  apt_repository: repo="{{ item }} {{ ansible_distribution_release }} main" state=present
+  become: yes
+  with_items:
+    - deb {{ mariadb_apt_mirror }}/mariadb/repo/{{ mariadb_version }}/ubuntu
+    - deb-src {{ mariadb_apt_mirror }}/mariadb/repo/{{ mariadb_version }}/ubuntu
+
+- name: Install MariaDB
+  apt: name={{ mariadb_apt_packages }} state=present update_cache=yes
+  become: yes
+  register: mysql_installed

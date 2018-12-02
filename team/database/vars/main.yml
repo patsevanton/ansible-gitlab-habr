@@ -1,0 +1,3 @@
+---
+install_mysql: yes
+mysql_version: "5.7"

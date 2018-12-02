@@ -1,0 +1,62 @@
+---
+- name: Install MySQL
+  include_tasks: install_mysql.yml
+  when: install_mysql
+
+- name: Install MariaDB
+  include_tasks: install_mariadb.yml
+  when: install_mariadb
+
+- name: Install Percona Server
+  include_tasks: install_percona.yml
+  when: install_percona
+
+- block:
+  - name: Install Percona Toolkit & Pip
+    apt:
+      package:
+        - percona-toolkit
+        - "{{ 'python3-pip' if ansible_python.version.major == 3 else 'python-pip' }}"
+      state: present
+    become: yes
+
+  - name: Install PyMySQL
+    pip: name=pymysql
+    become: yes
+
+  - name: Delete Default Configs
+    file: name=/etc/mysql/{{ item }} state=absent
+    become: yes
+    notify: Restart MySQL
+    loop:
+      - conf.d/mariadb.cnf
+      - conf.d/mysqld_safe_syslog.cnf
+      - mysql.conf.d/mysqld.cnf
+      - percona-server.conf.d/mysqld.cnf
+      - percona-server.conf.d/mysqld_safe.cnf
+
+  - name: Copy Config Files
+    template: src={{ item.src }} dest=/etc/mysql/{{ item.dest }}
+    become: yes
+    when: item.when
+    notify: Restart MySQL
+    loop:
+      - { src: my.cnf.j2,          dest: my.cnf,                 when: yes }
+      - { src: mysqld_safe.cnf.j2, dest: conf.d/mysqld_safe.cnf, when: yes }
+      - { src: mysqld.cnf.j2,      dest: conf.d/mysqld.cnf,      when: yes }
+      - { src: client.cnf.j2,      dest: conf.d/client.cnf,      when: yes }
+      - { src: mysqldump.cnf.j2,   dest: conf.d/mysqldump.cnf,   when: yes }
+      - { src: isamchk.cnf.j2,     dest: conf.d/isamchk.cnf,     when: yes }
+      - { src: innodb.cnf.j2,      dest: conf.d/innodb.cnf,      when: yes }
+      - { src: passwords.cnf.j2,   dest: conf.d/passwords.cnf,   when: "{{ env_name != 'dev' }}" }
+
+  - name: Secure Server
+    include_tasks: lockdown.yml
+    when:
+      - mysql_installed is defined
+      - mysql_installed is changed
+  when: install_mysql or install_mariadb or install_percona
+
+- name: Create User and/or Database
+  include_tasks: user.yml
+  when: new_db_name is defined or (new_db_user is defined and new_db_pass is defined)

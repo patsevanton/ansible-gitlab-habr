@@ -1,0 +1,12 @@
+---
+users:
+  - username: user
+#   password is password
+    password: "$6$2qP0dAprB0PbQmMU$GQExfhj7qn6YEPj2nKInYGxMz0p1BPGHKoCblzq8brXBN0Yc8nOIWkyUqiV7FGRftDiXnzv8Q.3UdTbZaJXqs1"
+    groups: ['user']
+groups_to_create:
+  - name: analytics
+users_deleted:
+  - username: bar
+    name: Bar User
+    uid: 1002

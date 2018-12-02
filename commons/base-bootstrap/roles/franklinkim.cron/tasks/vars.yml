@@ -1,0 +1,4 @@
+---
+
+- name: Including variables
+  include_vars: "{{ ansible_distribution }}-{{ ansible_distribution_release }}.yml"

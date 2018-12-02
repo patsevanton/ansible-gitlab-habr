@@ -1,0 +1,11 @@
+- hosts: all
+  become: yes
+  vars_files:
+    - vars/sysctl.yml
+    - vars/users.yml
+    - vars/cron.yml
+  roles:
+    - singleplatform-eng.users
+    - oefenweb.sysctl
+    - geerlingguy.ansible
+    - franklinkim.cron

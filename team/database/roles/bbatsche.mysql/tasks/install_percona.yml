@@ -1,0 +1,9 @@
+---
+- name: Add Percona Package
+  apt: deb={{ percona_deb }}
+  become: yes
+
+- name: Install Percona Server
+  apt: name={{ percona_apt_packages }} state=present update_cache=yes
+  become: yes
+  register: mysql_installed

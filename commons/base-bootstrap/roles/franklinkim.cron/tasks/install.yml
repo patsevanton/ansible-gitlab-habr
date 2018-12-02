@@ -1,0 +1,6 @@
+---
+
+- name: Installing package
+  package:
+    name: "{{ cron_package }}"
+    state: present

@@ -1,0 +1,16 @@
+image: williamyeh/ansible:debian8
+
+before_script:
+  - apt-get update
+  - apt-get install -y git
+  - git submodule sync --recursive
+  - git submodule update --init --recursive --remote
+
+build1:
+  stage: build
+  script:
+    - chmod -R a-w ../database
+    - ls team-users
+    - ls team-users/vars
+    - ansible database -m ping --extra-vars "ansible_ssh_pass=$userpassword"
+    - ansible-playbook database.yml --extra-vars "ansible_ssh_pass=$userpassword"

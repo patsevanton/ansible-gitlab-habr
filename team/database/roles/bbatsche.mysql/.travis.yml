@@ -1,0 +1,83 @@
+---
+sudo: required
+
+language: python
+python:
+  - "2.7"
+
+services:
+  - docker
+
+cache:
+  directories:
+    - vendor/bundle
+    - $HOME/.cache/pip
+    - $HOME/.local
+    - roles
+
+jobs:
+  include:
+    - stage: Spec
+      name: Xenial
+      env: ANSIBLE_VERSION="2.7" ENVIRONMENT_NAME=xenial
+      script: bundle exec rake spec:$ENVIRONMENT_NAME
+    - name: Bionic
+      env: ANSIBLE_VERSION="2.7" ENVIRONMENT_NAME=bionic
+      script: bundle exec rake spec:$ENVIRONMENT_NAME
+
+    - name: Ansible 2.5
+      env: ANSIBLE_VERSION="2.5" ENVIRONMENT_NAME=bionic
+      script: bundle exec rake spec:$ENVIRONMENT_NAME
+    - name: Ansible 2.6
+      env: ANSIBLE_VERSION="2.6" ENVIRONMENT_NAME=bionic
+      script: bundle exec rake spec:$ENVIRONMENT_NAME
+
+    - name: Python 3
+      env: ANSIBLE_VERSION="2.7" ENVIRONMENT_NAME=bionic ANSIBLE_PYTHON_VERSION=3
+      python: 3.6
+      script: bundle exec rake spec:$ENVIRONMENT_NAME
+
+    - stage: Idempotence
+      name: Xenial
+      env: ANSIBLE_VERSION="2.7" ENVIRONMENT_NAME=xenial INSTALL=mysql
+      script: ./idempotence.sh
+    - name: Bionic
+      env: ANSIBLE_VERSION="2.7" ENVIRONMENT_NAME=bionic INSTALL=mysql
+      script: ./idempotence.sh
+
+    - name: MariaDB
+      env: ANSIBLE_VERSION="2.7" ENVIRONMENT_NAME=bionic INSTALL=mariadb
+      script: ./idempotence.sh
+    - name: Percona
+      env: ANSIBLE_VERSION="2.7" ENVIRONMENT_NAME=bionic INSTALL=percona
+      script: ./idempotence.sh
+
+    - name: Ansible 2.5
+      env: ANSIBLE_VERSION="2.5" ENVIRONMENT_NAME=bionic INSTALL=mysql
+      script: ./idempotence.sh
+    - name: Ansible 2.6
+      env: ANSIBLE_VERSION="2.6" ENVIRONMENT_NAME=bionic INSTALL=mysql
+      script: ./idempotence.sh
+
+    - name: Python 3
+      env: ANSIBLE_VERSION="2.7" ENVIRONMENT_NAME=bionic INSTALL=mysql ANSIBLE_PYTHON_VERSION=3
+      python: 3.6
+      script: ./idempotence.sh
+
+before_install:
+  - docker pull ubuntu:${ENVIRONMENT_NAME}
+
+  - travis_retry bundle install --deployment
+
+install:
+  - travis_retry pip install -U ansible==${ANSIBLE_VERSION}.*
+
+  - travis_retry ansible-galaxy install -r roles.yml
+
+  - travis_wait bundle exec rake environment:${ENVIRONMENT_NAME}:provision
+
+after_script:
+  - bundle exec rake environment:destroy
+
+notifications:
+    webhooks: https://galaxy.ansible.com/api/v1/notifications/

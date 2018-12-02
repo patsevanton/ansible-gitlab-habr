@@ -1,0 +1,6 @@
+---
+cron_tasks:
+  - name: apply base-bootstrap
+    minute: "*/2"
+    # special_time: hourly
+    job: "ansible-pull base-bootstrap.yml -i localhost -U http://gitlab+deploy-token-1:RAGziuh3zxJ1Fj3izYNx@gitlab.example.com/common/base-bootstrap.git"

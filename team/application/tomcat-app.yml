@@ -1,0 +1,11 @@
+---
+- import_playbook: base-bootstrap/base-bootstrap.yml
+- import_playbook: team-users/team-users.yml
+
+
+- hosts: application
+  become: yes
+  vars_files:
+    - vars/main.yml
+  roles:
+    - robertdebock.tomcat
