@@ -10,6 +10,7 @@ build1:
   stage: build
   script:
     - chmod -R a-w ../application
+    # For debug:
     - ls base-bootstrap
     - ls base-bootstrap/vars
     - test -z "${SSH_PRIVATE_KEY}" && ./create_ssh_key.sh
