@@ -12,5 +12,5 @@ build1:
     - chmod -R a-w ../loadbalancer
     - ls team-users
     - ls team-users/vars
-    - ansible loadbalancer -m ping --extra-vars "ansible_ssh_pass=$userpassword ask-become-pass=$$userpassword"
-    - ansible-playbook loadbalancer.yml --extra-vars "ansible_ssh_pass=$userpassword ask-become-pass=$$userpassword"
+    - ansible loadbalancer -m ping --extra-vars "ansible_ssh_pass=$userpassword ask-become-pass=$userpassword"
+    - ansible-playbook loadbalancer.yml --extra-vars "ansible_ssh_pass=$userpassword ask-become-pass=$userpassword"
