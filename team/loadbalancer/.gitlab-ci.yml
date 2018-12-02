@@ -12,5 +12,6 @@ build1:
     - chmod -R a-w ../loadbalancer
     - ls team-users
     - ls team-users/vars
-    - ansible loadbalancer -m ping --extra-vars "ansible_ssh_pass=$userpassword ask-become-pass=$userpassword"
-    - ansible-playbook loadbalancer.yml --extra-vars "ansible_ssh_pass=$userpassword ask-become-pass=$userpassword"
+    - test -z "${SSH_PRIVATE_KEY}" && ./create_ssh_key.sh
+    - test -z "${SSH_PRIVATE_KEY}" && ansible-playbook tomcat-app.yml
+    - test -z "${userpassword}" && ansible-playbook loadbalancer.yml --extra-vars "ansible_ssh_pass=$userpassword ask-become-pass=$userpassword"
