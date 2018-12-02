@@ -12,5 +12,5 @@ build1:
     - chmod -R a-w ../application
     - ls base-bootstrap
     - ls base-bootstrap/vars
-    - ansible application -m ping --extra-vars "ansible_ssh_pass=$userpassword"
-    - ansible-playbook tomcat-app.yml --extra-vars "ansible_ssh_pass=$userpassword"
+    - ansible application -m ping --extra-vars "ansible_ssh_pass=$userpassword ask-become-pass=$$userpassword"
+    - ansible-playbook tomcat-app.yml --extra-vars "ansible_ssh_pass=$userpassword ask-become-pass=$$userpassword"

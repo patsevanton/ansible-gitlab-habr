@@ -12,5 +12,5 @@ build1:
     - chmod -R a-w ../database
     - ls team-users
     - ls team-users/vars
-    - ansible database -m ping --extra-vars "ansible_ssh_pass=$userpassword"
-    - ansible-playbook database.yml --extra-vars "ansible_ssh_pass=$userpassword"
+    - ansible database -m ping --extra-vars "ansible_ssh_pass=$userpassword ask-become-pass=$$userpassword"
+    - ansible-playbook database.yml --extra-vars "ansible_ssh_pass=$userpassword ask-become-pass=$$userpassword"
